@@ -1,8 +1,7 @@
-﻿namespace JwtWebApiTutorial.Models
+﻿namespace JwtWebApiTutorial.Constants
 {
-    public class User
+    public class UserProfile
     {
-        public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Religion { get; set; } = string.Empty;
         public string Position { get; set; } = string.Empty;
@@ -18,14 +17,5 @@
         public string Npwp { get; set; } = string.Empty;
         public DateTime Date_of_birth { get; set; }
         public string Role { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
-        public string Refresh_token { get; set; } = string.Empty;
-        public DateTime Created_at { get; set; }
-        public DateTime Updated_at { get; set; }
-        public DateTime? Deleted_at { get; set; }
-        public string Created_by { get; set; } = string.Empty;
-        public string Updated_by { get; set; } = string.Empty;
-        public string Deleted_by { get; set; } = string.Empty;
-
     }
 }
