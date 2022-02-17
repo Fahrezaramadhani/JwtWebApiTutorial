@@ -2,6 +2,6 @@
 {
     public class PostRefreshRequest
     {
-        public string refresh_token { get; set; } = string.Empty;
+        public string RefreshToken { get; set; } = string.Empty;
     }
 }

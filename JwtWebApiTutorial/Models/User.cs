@@ -6,26 +6,30 @@
         public string Name { get; set; } = string.Empty;
         public string Religion { get; set; } = string.Empty;
         public string Position { get; set; } = string.Empty;
-        public int Current_salary { get; set; }
+        public int CurrentSalary { get; set; }
         public string Status { get; set; } = string.Empty;
-        public DateTime Join_date { get; set; }
-        public DateTime End_date { get; set; }
-        public string Phone_number { get; set; } = string.Empty;
+        public DateTime JoinDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public string PhoneNumber { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
         public string City { get; set; } = string.Empty;
-        public string No_ktp { get; set; } = string.Empty;
+        public string NoKtp { get; set; } = string.Empty;
         public string Npwp { get; set; } = string.Empty;
-        public DateTime Date_of_birth { get; set; }
+        public DateTime DateOfBirth { get; set; }
         public string Role { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
-        public string Refresh_token { get; set; } = string.Empty;
-        public DateTime Created_at { get; set; }
-        public DateTime Updated_at { get; set; }
-        public DateTime? Deleted_at { get; set; }
-        public string Created_by { get; set; } = string.Empty;
-        public string Updated_by { get; set; } = string.Empty;
-        public string Deleted_by { get; set; } = string.Empty;
+        public string PhotoName { get; set; } = string.Empty;
+        public string RefreshToken { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+        public DateTime? DeletedAt { get; set; }
+        public string CreatedBy { get; set; } = string.Empty;
+        public string UpdatedBy { get; set; } = string.Empty;
+        public string DeletedBy { get; set; } = string.Empty;
+
+        public Schedule Schedule { get; set; }
+        public int ScheduleId { get; set; }
 
     }
 }

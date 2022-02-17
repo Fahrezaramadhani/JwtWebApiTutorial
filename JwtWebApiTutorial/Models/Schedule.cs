@@ -4,11 +4,13 @@
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public DateTime Start_checkin_at { get; set; }
-        public DateTime End_checkin_at { get; set; }
-        public DateTime Start_checkout_at { get; set; }
-        public DateTime End_checkout_at { get; set; }
-        public DateTime Created_at { get; set; }
-        public DateTime Updated_at { get; set; }
+        public DateTime StartCheckinAt { get; set; }
+        public DateTime EndCheckinAt { get; set; }
+        public DateTime StartCheckoutAt { get; set; }
+        public DateTime EndCheckoutAt { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+        public string CreatedBy { get; set; } = string.Empty;
+        public string UpdatedBy { get; set; } = string.Empty;
     }
 }

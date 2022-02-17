@@ -30,6 +30,9 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 //Enable access to HttpContext
 builder.Services.AddHttpContextAccessor();
 
+//Add cors
+builder.Services.AddCors();
+
 // Add Dependency Injection for Services
 builder.Services.AddScoped<IAuthService, AuthService>();
 
@@ -72,7 +75,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
+
+app.UseCors(x => x
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .SetIsOriginAllowed(origin => true) // allow any origin
+                .AllowCredentials());
 
 app.UseAuthentication();
 

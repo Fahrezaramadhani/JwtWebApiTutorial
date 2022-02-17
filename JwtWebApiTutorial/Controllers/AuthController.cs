@@ -61,8 +61,8 @@ namespace JwtWebApiTutorial.Controllers
 
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
-        [HttpPost("Refresh")]
-        public async Task<ActionResult<PostLoginResponse>> Refresh(PostRefreshRequest refreshRequest)
+        [HttpPost("refresh")]
+        public async Task<ActionResult<PostRefreshResponse>> Refresh(PostRefreshRequest refreshRequest)
         {
             try
             {

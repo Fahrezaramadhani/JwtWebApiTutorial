@@ -33,7 +33,7 @@ namespace JwtWebApiTutorial.Services
                 user.Id = LastUser.Id + 1;
             }
 
-            //Add the value in request to user model
+            //Add the value in request to user object
             user.Name = registerRequest.Name;
             user.Email = registerRequest.Email;
             user.Role = registerRequest.Role;
@@ -56,33 +56,14 @@ namespace JwtWebApiTutorial.Services
         {
             var _user = _dbContext.Users.FirstOrDefault(u => u.Email == loginRequest.Email);
 
-            //Add user data to user profile
-            userProfile.Name = _user.Name;
-            userProfile.Religion = _user.Religion;
-            userProfile.Position = _user.Position;
-            userProfile.Current_salary = _user.Current_salary;
-            userProfile.Status = _user.Status;
-            userProfile.Join_date = _user.Join_date;
-            userProfile.End_date = _user.End_date;
-            userProfile.Phone_number = _user.Phone_number;
-            userProfile.Email = _user.Email;
-            userProfile.Address = _user.Address;
-            userProfile.City = _user.City;
-            userProfile.No_ktp = _user.No_ktp;
-            userProfile.Npwp = _user.Npwp;
-            userProfile.Date_of_birth = _user.Date_of_birth;
-            userProfile.Role = _user.Role;
-
             //Check either the user is found or not
             if (_user == null)
             {
                 return new PostLoginResponse
                 {
-                    message = "User not found",
-                    status = 404,
-                    user = userProfile,
-                    access_token = null,
-                    refresh_token = null,
+                    Message = "User not found",
+                    Status = 404,
+                    Data = userProfile,
                 };
             }
 
@@ -92,11 +73,9 @@ namespace JwtWebApiTutorial.Services
             {
                 return new PostLoginResponse
                 {
-                    message = "Unauthorized",
-                    status = 401,
-                    user = userProfile,
-                    access_token = null,
-                    refresh_token = null,
+                    Message = "Unauthorized",
+                    Status = 401,
+                    Data = userProfile,
                 };
             }
 
@@ -112,36 +91,44 @@ namespace JwtWebApiTutorial.Services
                 _jwtConfiguration.RefreshSecretKey,
                 DateTime.UtcNow.AddDays(_jwtConfiguration.RefreshExpirationTime));
 
-            _user.Refresh_token = refreshToken;
+            //Add user data to user profile
+            userProfile.Id = _user.Id;
+            userProfile.ScheduleId = _user.ScheduleId;
+            userProfile.Name = _user.Name;
+            userProfile.Position = _user.Position;
+            userProfile.Role = _user.Role;
+            userProfile.PhotoName = _user.PhotoName;
+            userProfile.AccessToken = token;
+            userProfile.RefreshToken = refreshToken;
+
+            _user.RefreshToken = refreshToken;
             await _dbContext.SaveChangesAsync();
 
             return new PostLoginResponse
             {
-                message = "OK",
-                status = 200,
-                user = userProfile,
-                access_token = token,
-                refresh_token = refreshToken,
+                Message = "OK",
+                Status = 200,
+                Data = userProfile
             };
         }
 
         public async Task<PostRefreshResponse> Refresh(PostRefreshRequest refreshRequest)
         {
-            var _user = _dbContext.Users.FirstOrDefault(x => x.Refresh_token == refreshRequest.refresh_token);
+            var _user = _dbContext.Users.FirstOrDefault(x => x.RefreshToken == refreshRequest.RefreshToken);
 
             //Check either the user is found or not
             if (_user == null)
             {
                 return new PostRefreshResponse
                 {
-                    message = "User not found",
-                    status = 404,
-                    access_token = null,
+                    Message = "User not found",
+                    Status = 404,
+                    AccessToken = null,
                 };
             }
 
             //Getting claim for getting expiry date of the token
-            var _claimsPrincipal = AuthenticationHelper.GetPrincipalFromExpiredToken(refreshRequest.refresh_token, _jwtConfiguration.RefreshSecretKey);
+            var _claimsPrincipal = AuthenticationHelper.GetPrincipalFromExpiredToken(refreshRequest.RefreshToken, _jwtConfiguration.RefreshSecretKey);
             var utcExpiryDate = long.Parse(_claimsPrincipal.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Exp).Value);
             var expiryDate = UnixTimeStampToDateTime(utcExpiryDate);
 
@@ -156,17 +143,17 @@ namespace JwtWebApiTutorial.Services
             {
                 return new PostRefreshResponse
                 {
-                    message = "OK",
-                    status = 200,
-                    access_token = token,
+                    Message = "OK",
+                    Status = 200,
+                    AccessToken = token,
                 };
             }else
             {
                 return new PostRefreshResponse
                 {
-                    message = "Unauthorized",
-                    status = 401,
-                    access_token = null,
+                    Message = "Unauthorized",
+                    Status = 401,
+                    AccessToken = null,
                 };
             }
         }

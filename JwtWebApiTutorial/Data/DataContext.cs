@@ -49,20 +49,20 @@ namespace JwtWebApiTutorial.Data
                 switch (entry.State)
                 {
                     case EntityState.Added:
-                        entry.CurrentValues["Created_at"] = DateTime.Now;
-                        entry.CurrentValues["Created_by"] = name;
-                        entry.CurrentValues["Deleted_at"] = null;
-                        entry.CurrentValues["Updated_at"] = DateTime.Now;
-                        entry.CurrentValues["Updated_by"] = name;
+                        entry.CurrentValues["CreatedAt"] = DateTime.Now;
+                        entry.CurrentValues["CreatedBy"] = name;
+                        entry.CurrentValues["DeletedAt"] = null;
+                        entry.CurrentValues["UpdatedAt"] = DateTime.Now;
+                        entry.CurrentValues["UpdatedBy"] = name;
                         break;
                     case EntityState.Modified:
-                        entry.CurrentValues["Updated_at"] = DateTime.Now;
-                        entry.CurrentValues["Updated_by"] = name;
+                        entry.CurrentValues["UpdatedAt"] = DateTime.Now;
+                        entry.CurrentValues["UpdatedBy"] = name;
                         break;
                     case EntityState.Deleted:
                         entry.State = EntityState.Modified;
-                        entry.CurrentValues["Deleted_at"] = DateTime.Now;
-                        entry.CurrentValues["Deleted_by"] = name;
+                        entry.CurrentValues["DeletedAt"] = DateTime.Now;
+                        entry.CurrentValues["DeletedBy"] = name;
                         break;
                 }
             }
