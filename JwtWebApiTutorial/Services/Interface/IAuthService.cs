@@ -1,12 +1,12 @@
 ﻿using JwtWebApiTutorial.Requests.Auth;
-using JwtWebApiTutorial.Responses.Auth;
+using JwtWebApiTutorial.Responses;
+using JwtWebApiTutorial.Responses.Auths;
 
 namespace JwtWebApiTutorial.Services.Interface
 {
     public interface IAuthService
     {
-        Task<PostRegisterResponse> Register(PostRegisterRequest registerRequest);
-        Task<PostLoginResponse> Login(PostLoginRequest loginRequest);
-        Task<PostRefreshResponse> Refresh(PostRefreshRequest refreshRequest);
+        Task<Response<PostLoginResponse>> Login(PostLoginRequest loginRequest);
+        Task<Response<PostRefreshResponse>> Refresh(string refreshRequest);
     }
 }

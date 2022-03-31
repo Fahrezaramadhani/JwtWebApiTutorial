@@ -1,0 +1,257 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="JwtWebApiTutorial.Services.UserService">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAYBAAAAAAAAAgBAAAABAAAAAAEAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\UserService.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_dbContext" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="JwtWebApiTutorial.Models.User">
+    <Position X="11" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BEASEAAEQCAACADoECAAQAQhAEEQAgACEAAAAAAIAAE=</HashCode>
+      <FileName>Models\User.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Schedule" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="JwtWebApiTutorial.Models.ActivityRecord">
+    <Position X="13.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEADEAAAAAAgCAAAACIEAAgAABAAAgABAAAgAAAIAAE=</HashCode>
+      <FileName>Models\ActivityRecord.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="ActivityRecordSchedule" />
+      <Property Name="User" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="JwtWebApiTutorial.Models.ActivityRecordSchedule">
+    <Position X="16.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEACEAAAAAAACAAAAKADAAQAAAAAAgAAAAAAAAAAAAE=</HashCode>
+      <FileName>Models\ActivityRecordSchedule.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="JwtWebApiTutorial.Models.AttendanceSchedule">
+    <Position X="14.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEICGAAAAAAACAAAACAAAAQAAAIAAgAAAAAAAAAgAAE=</HashCode>
+      <FileName>Models\AttendanceSchedule.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="JwtWebApiTutorial.Data.DataContext">
+    <Position X="4.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>oEAQgCCQABAAAEAABAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\DataContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="JwtWebApiTutorial.Models.Attendance">
+    <Position X="17.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEADEAAAAAAASABABCAAAAgAFEAAQgAAAAIBAAAIAAE=</HashCode>
+      <FileName>Models\Attendance.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Schedule" />
+      <Property Name="User" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="JwtWebApiTutorial.Services.ScheduleService">
+    <Position X="8.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAYBAAAAAAAAAgBAAAABBAAAAAEAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Services\ScheduleService.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_dbContext" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="JwtWebApiTutorial.Services.AuthService">
+    <Position X="1.75" Y="3.75" Width="1.5" />
+    <AssociationLine Name="_dbContext" Type="JwtWebApiTutorial.Data.DataContext" FixedToPoint="true">
+      <Path>
+        <Point X="2.5" Y="3.75" />
+        <Point X="2.5" Y="3.625" />
+        <Point X="4.75" Y="3.625" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAABAAAAAAAABAAAAAAEAAABAAAAQAAAAAAA=</HashCode>
+      <FileName>Services\AuthService.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_dbContext" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="JwtWebApiTutorial.Services.AttendanceService">
+    <Position X="4.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAQAAAAggAAAIBgAAAAAAAAABACAAAAAAAAAA=</HashCode>
+      <FileName>Services\AttendanceService.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_dbContext" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="JwtWebApiTutorial.Services.ApplicationSettingService">
+    <Position X="2.75" Y="6.75" Width="1.5" />
+    <AssociationLine Name="_dbContext" Type="JwtWebApiTutorial.Data.DataContext" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="4.031" Y="6.75" />
+        <Point X="4.031" Y="4.188" />
+        <Point X="4.75" Y="4.188" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAIBAAAAAAAAAgBAAAABAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\ApplicationSettingService.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_dbContext" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="JwtWebApiTutorial.Services.ActivityRecordService">
+    <Position X="6.75" Y="6.75" Width="1.5" />
+    <AssociationLine Name="_dbContext" Type="JwtWebApiTutorial.Data.DataContext" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="7.906" Y="6.75" />
+        <Point X="7.906" Y="4.25" />
+        <Point X="6.25" Y="4.25" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAIBAAAAAAAgAgBAAAABAAAAAAABAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>Services\ActivityRecordService.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_dbContext" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="JwtWebApiTutorial.Services.ActivityRecordScheduleService">
+    <Position X="7" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIBAAAAAAAAAgBAAAABAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\ActivityRecordScheduleService.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_dbContext" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="JwtWebApiTutorial.Controllers.ActivityRecordController">
+    <Position X="20" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABQAAAAAAAAAAAAAEgAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\ActivityRecordController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_service" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="JwtWebApiTutorial.Controllers.ActivityRecordScheduleController">
+    <Position X="19.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABQAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\ActivityRecordScheduleController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_service" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="JwtWebApiTutorial.Controllers.AttendanceController">
+    <Position X="19.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAQAAIAgAAAAAAAAAhACAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\AttendanceController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_service" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="JwtWebApiTutorial.Controllers.AuthController">
+    <Position X="24.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAQAAAAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>Controllers\AuthController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_service" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="JwtWebApiTutorial.Controllers.ScheduleController">
+    <Position X="24.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAABQAAAAAAAAAAEAAEAAAAAABAAAAAA=</HashCode>
+      <FileName>Controllers\ScheduleController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_service" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="JwtWebApiTutorial.Controllers.UserController">
+    <Position X="20" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAABQAAAAAAAAAAEAAEgAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\UserController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_service" />
+    </ShowAsAssociation>
+  </Class>
+  <Interface Name="JwtWebApiTutorial.Services.Interface.IActivityRecordService">
+    <Position X="23" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAABAAAAAAAAAAAABAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>Services\Interface\IActivityRecordService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="JwtWebApiTutorial.Services.Interface.IActivityRecordScheduleService">
+    <Position X="22.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Interface\IActivityRecordScheduleService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="JwtWebApiTutorial.Services.Interface.IAttendanceService">
+    <Position X="22.5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAgAAAIAgAAAAAAAAABACAAAAAAAAAA=</HashCode>
+      <FileName>Services\Interface\IAttendanceService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="JwtWebApiTutorial.Services.Interface.IUserService">
+    <Position X="22.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAYAAAAAAAAAAgBAAAAAAAAAAAEAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Interface\IUserService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="JwtWebApiTutorial.Services.Interface.IAuthService">
+    <Position X="27.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>Services\Interface\IAuthService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="JwtWebApiTutorial.Services.Interface.IScheduleService">
+    <Position X="27.5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAYAAAAAAAAAAABAAAAABAAAAAEAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Services\Interface\IScheduleService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

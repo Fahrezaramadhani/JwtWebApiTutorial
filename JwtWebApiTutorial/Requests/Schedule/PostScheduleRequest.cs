@@ -1,6 +1,6 @@
 ﻿namespace JwtWebApiTutorial.Requests.Schedule
 {
-    public interface PostScheduleRequest
+    public class PostScheduleRequest
     {
         public string Name { get; set; }
         public DateTime StartCheckinAt { get; set; }

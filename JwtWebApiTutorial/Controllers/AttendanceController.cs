@@ -1,13 +1,17 @@
 ﻿using JwtWebApiTutorial.Exceptions;
 using JwtWebApiTutorial.Requests.Attendance;
 using JwtWebApiTutorial.Responses;
+using JwtWebApiTutorial.Responses.Attendances;
 using JwtWebApiTutorial.Services.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Sieve.Models;
 
 namespace JwtWebApiTutorial.Controllers
 {
     [Produces("application/json")]
     [Route("api/attendance")]
+    [Authorize]
     [ApiController]
     public class AttendanceController : ControllerBase
     {
@@ -21,7 +25,8 @@ namespace JwtWebApiTutorial.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
         [HttpPost("checkin_online")]
-        public async Task<ActionResult<Response>> CheckinOnline(PostCheckinOnlineRequest postCheckinOnlineRequest)
+        [Authorize]
+        public async Task<ActionResult<Response<string>>> CheckinOnline(PostCheckinOnlineRequest postCheckinOnlineRequest)
         {
             try
             {
@@ -38,7 +43,7 @@ namespace JwtWebApiTutorial.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
         [HttpPost("checkout_online")]
-        public async Task<ActionResult<Response>> CheckoutOnline(PostCheckoutOnlineRequest postCheckoutOnlineRequest)
+        public async Task<ActionResult<Response<string>>> CheckoutOnline(PostCheckoutOnlineRequest postCheckoutOnlineRequest)
         {
             try
             {
@@ -50,6 +55,47 @@ namespace JwtWebApiTutorial.Controllers
             {
                 return StatusCode((ex as HttpResponseException).Status, ex);
             }
+        }
+
+        [HttpPost("checkin_offline")]
+        public async Task<ActionResult<Response<string>>> CheckinOffline(PostCheckinOfflineRequest postCheckinOfflineRequest)
+        {
+            try
+            {
+                var result = await _service.CheckinOffline(postCheckinOfflineRequest);
+
+                return Ok(result);
+            }
+            catch (HttpResponseException ex)
+            {
+                return StatusCode((ex as HttpResponseException).Status, ex);
+            }
+        }
+
+        [HttpPost("checkout_offline")]
+        public async Task<ActionResult<Response<string>>> CheckoutOffline(PostCheckoutOfflineRequest postCheckoutOfflineRequest)
+        {
+            try
+            {
+                var result = await _service.CheckoutOffline(postCheckoutOfflineRequest);
+
+                return Ok(result);
+            }
+            catch (HttpResponseException ex)
+            {
+                return StatusCode((ex as HttpResponseException).Status, ex);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<Response<PaginatedResponse<GetAllAttendanceResponse>>>> GetUserList([FromQuery] SieveModel sieveModel)
+        {
+            if (sieveModel.PageSize == null)
+            {
+                return Ok(await _service.GetAttendanceList(sieveModel));
+            }
+
+            return Ok(await _service.GetPagedAttendanceList(sieveModel));
         }
     }
 }

@@ -7,9 +7,10 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using JwtWebApiTutorial.Responses.Auth;
 using JwtWebApiTutorial.Services.Interface;
 using JwtWebApiTutorial.Exceptions;
+using JwtWebApiTutorial.Responses.Auths;
+using JwtWebApiTutorial.Responses;
 
 namespace JwtWebApiTutorial.Controllers
 {
@@ -27,25 +28,8 @@ namespace JwtWebApiTutorial.Controllers
 
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
-        [HttpPost("register")]
-        public async Task<ActionResult<PostRegisterResponse>> Register(PostRegisterRequest registerRequest)
-        {
-            try
-            {
-                var result = await _service.Register(registerRequest);
-
-                return Ok(result);
-            }
-            catch (HttpResponseException ex)
-            {
-                return StatusCode((ex as HttpResponseException).Status, ex);
-            }
-        }
-
-        [ProducesResponseType(200)]
-        [ProducesResponseType(401)]
         [HttpPost("login")]
-        public async Task<ActionResult<PostLoginResponse>> Login(PostLoginRequest loginRequest)
+        public async Task<ActionResult<Response<PostLoginResponse>>> Login(PostLoginRequest loginRequest)
         {
             try
             {
@@ -61,12 +45,12 @@ namespace JwtWebApiTutorial.Controllers
 
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
-        [HttpPost("refresh")]
-        public async Task<ActionResult<PostRefreshResponse>> Refresh(PostRefreshRequest refreshRequest)
+        [HttpPost("refresh/{refreshToken}")]
+        public async Task<ActionResult<Response<PostRefreshResponse>>> Refresh(string refreshToken)
         {
             try
             {
-                var result = await _service.Refresh(refreshRequest);
+                var result = await _service.Refresh(refreshToken);
 
                 return Ok(result);
             }

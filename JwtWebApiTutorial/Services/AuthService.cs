@@ -1,10 +1,11 @@
-﻿using JwtWebApiTutorial.Configurations;
-using JwtWebApiTutorial.Constants;
+﻿using AutoMapper;
+using JwtWebApiTutorial.Configurations;
 using JwtWebApiTutorial.Data;
 using JwtWebApiTutorial.Helpers;
 using JwtWebApiTutorial.Models;
 using JwtWebApiTutorial.Requests.Auth;
-using JwtWebApiTutorial.Responses.Auth;
+using JwtWebApiTutorial.Responses;
+using JwtWebApiTutorial.Responses.Auths;
 using JwtWebApiTutorial.Services.Interface;
 using Microsoft.Extensions.Options;
 using System.IdentityModel.Tokens.Jwt;
@@ -13,57 +14,30 @@ namespace JwtWebApiTutorial.Services
 {
     public class AuthService : IAuthService
     {
-        public static User user = new User();
-        public static UserProfile userProfile = new UserProfile();
         private readonly DataContext _dbContext;
         private readonly JWTConfiguration _jwtConfiguration;
-        public AuthService (DataContext _context, IOptions<JWTConfiguration> jwtConfiguration)
+        private readonly IMapper _mapper;
+        public AuthService(DataContext _context, IOptions<JWTConfiguration> jwtConfiguration, IMapper mapper)
         {
             _dbContext = _context;
             _jwtConfiguration = jwtConfiguration.Value;
+            _mapper = mapper;
         }
 
-        public async Task<PostRegisterResponse> Register(PostRegisterRequest registerRequest)
-        {
-            var LastUser = _dbContext.Users.OrderByDescending(user => user.Id).FirstOrDefault();
-
-            //Check either the table user is null or not
-            if (LastUser != null)
-            {
-                user.Id = LastUser.Id + 1;
-            }
-
-            //Add the value in request to user object
-            user.Name = registerRequest.Name;
-            user.Email = registerRequest.Email;
-            user.Role = registerRequest.Role;
-            user.Password = AuthenticationHelper.EncryptPassword(registerRequest.Password);
-
-            //Add the user to database
-            _dbContext.Users.Add(user);
-            await _dbContext.SaveChangesAsync();
-
-            return new PostRegisterResponse
-            {
-                Id = user.Id,
-                Name = user.Name,
-                Email = user.Email,
-                Role = user.Role
-            };
-        }
-
-        public async Task<PostLoginResponse> Login(PostLoginRequest loginRequest)
+        public async Task<Response<PostLoginResponse>> Login(PostLoginRequest loginRequest)
         {
             var _user = _dbContext.Users.FirstOrDefault(u => u.Email == loginRequest.Email);
 
+            PostLoginResponse postLoginResponse = new PostLoginResponse();
+
             //Check either the user is found or not
-            if (_user == null)
+            if (_user == null || _user.Status == "RESIGN")
             {
-                return new PostLoginResponse
+                return new Response<PostLoginResponse>
                 {
                     Message = "User not found",
                     Status = 404,
-                    Data = userProfile,
+                    Data = postLoginResponse,
                 };
             }
 
@@ -71,11 +45,11 @@ namespace JwtWebApiTutorial.Services
             var IsValid = AuthenticationHelper.VerifyPassword(loginRequest.Password, _user.Password);
             if (!IsValid)
             {
-                return new PostLoginResponse
+                return new Response<PostLoginResponse>
                 {
                     Message = "Unauthorized",
                     Status = 401,
-                    Data = userProfile,
+                    Data = postLoginResponse,
                 };
             }
 
@@ -92,43 +66,40 @@ namespace JwtWebApiTutorial.Services
                 DateTime.UtcNow.AddDays(_jwtConfiguration.RefreshExpirationTime));
 
             //Add user data to user profile
-            userProfile.Id = _user.Id;
-            userProfile.ScheduleId = _user.ScheduleId;
-            userProfile.Name = _user.Name;
-            userProfile.Position = _user.Position;
-            userProfile.Role = _user.Role;
-            userProfile.PhotoName = _user.PhotoName;
-            userProfile.AccessToken = token;
-            userProfile.RefreshToken = refreshToken;
+            postLoginResponse = _mapper.Map<PostLoginResponse>(_user);
+            postLoginResponse.AccessToken = token;
+            postLoginResponse.RefreshToken = refreshToken;
 
             _user.RefreshToken = refreshToken;
             await _dbContext.SaveChangesAsync();
 
-            return new PostLoginResponse
+            return new Response<PostLoginResponse>
             {
                 Message = "OK",
                 Status = 200,
-                Data = userProfile
+                Data = postLoginResponse
             };
         }
 
-        public async Task<PostRefreshResponse> Refresh(PostRefreshRequest refreshRequest)
+        public async Task<Response<PostRefreshResponse>> Refresh(string refreshRequest)
         {
-            var _user = _dbContext.Users.FirstOrDefault(x => x.RefreshToken == refreshRequest.RefreshToken);
+            var _user = _dbContext.Users.FirstOrDefault(x => x.RefreshToken == refreshRequest);
+
+            PostRefreshResponse postRefreshResponse = new PostRefreshResponse();
 
             //Check either the user is found or not
             if (_user == null)
             {
-                return new PostRefreshResponse
+                return new Response<PostRefreshResponse>
                 {
                     Message = "User not found",
                     Status = 404,
-                    AccessToken = null,
+                    Data = postRefreshResponse,
                 };
             }
 
             //Getting claim for getting expiry date of the token
-            var _claimsPrincipal = AuthenticationHelper.GetPrincipalFromExpiredToken(refreshRequest.RefreshToken, _jwtConfiguration.RefreshSecretKey);
+            var _claimsPrincipal = AuthenticationHelper.GetPrincipalFromExpiredToken(refreshRequest, _jwtConfiguration.RefreshSecretKey);
             var utcExpiryDate = long.Parse(_claimsPrincipal.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Exp).Value);
             var expiryDate = UnixTimeStampToDateTime(utcExpiryDate);
 
@@ -141,19 +112,20 @@ namespace JwtWebApiTutorial.Services
             //Check either the expiry date already expired or not
             if (expiryDate > DateTime.Now)
             {
-                return new PostRefreshResponse
+                postRefreshResponse.AccessToken = token;
+                return new Response<PostRefreshResponse>
                 {
                     Message = "OK",
                     Status = 200,
-                    AccessToken = token,
+                    Data = postRefreshResponse,
                 };
             }else
             {
-                return new PostRefreshResponse
+                return new Response<PostRefreshResponse>
                 {
                     Message = "Unauthorized",
                     Status = 401,
-                    AccessToken = null,
+                    Data = postRefreshResponse,
                 };
             }
         }

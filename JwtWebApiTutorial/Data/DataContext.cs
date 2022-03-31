@@ -14,8 +14,11 @@ namespace JwtWebApiTutorial.Data
 
         //Tables in Database
         public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<Schedule> Schedules { get; set; }
+        public virtual DbSet<AttendanceSchedule> AttendanceSchedules { get; set; }
         public virtual DbSet<Attendance> Attendances { get; set; }
+        public virtual DbSet<ActivityRecordSchedule> ActivityRecordSchedules { get; set; }
+        public virtual DbSet<ActivityRecord> ActivityRecords { get; set; }
+        public virtual DbSet<ApplicationSetting> ApplicationSettings { get; set; }
 
         public override int SaveChanges()
         {

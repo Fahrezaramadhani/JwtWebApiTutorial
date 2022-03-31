@@ -1,6 +1,7 @@
-﻿namespace JwtWebApiTutorial.Constants
+﻿
+namespace JwtWebApiTutorial.Responses.Auths
 {
-    public class UserProfile
+    public class PostLoginResponse
     {
         public int Id { get; set; }
         public int ScheduleId { get; set; }
