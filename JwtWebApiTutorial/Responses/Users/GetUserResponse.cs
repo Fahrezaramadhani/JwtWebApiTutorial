@@ -4,11 +4,10 @@ namespace JwtWebApiTutorial.Responses.Users
     public class GetUserResponse
     {
         public int UserId { get; set; }
-        public int ScheduleId { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Religion { get; set; } = string.Empty;
         public string Position { get; set; } = string.Empty;
-        public int CurrentSalary { get; set; }
+        public string Gender { get; set; }
         public string Status { get; set; } = string.Empty;
         public DateTime JoinDate { get; set; }
         public DateTime EndDate { get; set; }

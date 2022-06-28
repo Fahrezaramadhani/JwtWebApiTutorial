@@ -1,6 +1,5 @@
 ﻿using JwtWebApiTutorial.Exceptions;
 using JwtWebApiTutorial.Models;
-using JwtWebApiTutorial.Requests.Schedule;
 using JwtWebApiTutorial.Requests.User;
 using JwtWebApiTutorial.Responses;
 using JwtWebApiTutorial.Responses.Users;
@@ -15,7 +14,7 @@ namespace JwtWebApiTutorial.Controllers
     [Produces("application/json")]
     [Route("api/user")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUserService _service;
@@ -102,6 +101,23 @@ namespace JwtWebApiTutorial.Controllers
             }
 
             return Ok(await _service.GetPagedUserList(sieveModel));
+        }
+
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [HttpGet("superior")]
+        public async Task<ActionResult<Response<List<GetSuperiorResponse>>>> GetSuperiorList()
+        {
+            try
+            {
+                var result = await _service.GetSuperiorList();
+
+                return Ok(result);
+            }
+            catch (HttpResponseException ex)
+            {
+                return StatusCode((ex as HttpResponseException).Status, ex);
+            }
         }
     }
 }

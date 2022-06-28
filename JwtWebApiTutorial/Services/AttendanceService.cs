@@ -3,6 +3,7 @@ using JwtWebApiTutorial.Constants;
 using JwtWebApiTutorial.Data;
 using JwtWebApiTutorial.Helpers;
 using JwtWebApiTutorial.Models;
+using JwtWebApiTutorial.Requests.ApplicationSetting;
 using JwtWebApiTutorial.Requests.Attendance;
 using JwtWebApiTutorial.Responses;
 using JwtWebApiTutorial.Responses.Attendances;
@@ -10,6 +11,7 @@ using JwtWebApiTutorial.Services.Interface;
 using JwtWebApiTutorial.Sieve;
 using Microsoft.EntityFrameworkCore;
 using Sieve.Models;
+using System.Diagnostics;
 
 namespace JwtWebApiTutorial.Services
 {
@@ -29,27 +31,30 @@ namespace JwtWebApiTutorial.Services
         public async Task<Response<string>> CheckinOnline(PostCheckinOnlineRequest postCheckinOnlineRequest)
         {
             Attendance attendance = new Attendance();
-            var LastAttendance = _dbContext.Attendances.OrderByDescending(x => x.Id).FirstOrDefault();
-            var schedule = _dbContext.AttendanceSchedules.FirstOrDefault(x => x.Id == postCheckinOnlineRequest.ScheduleId);
+            var LastAttendance = _dbContext.Attendances.Where(u => u.UserId == postCheckinOnlineRequest.UserId).OrderByDescending(u => u.Id).FirstOrDefault();
 
-            //Check either the table user is null or not
-            if (LastAttendance != null)
+            /*
+            if (!(LastAttendance == null))
             {
-                attendance.Id = LastAttendance.Id + 1;
-            }
+                //Get DateOnly Data
+                DateOnly EndCheckinDateAt = DateOnly.FromDateTime(LastAttendance.CheckinAt);
+                DateOnly CheckinDate = DateOnly.FromDateTime(postCheckinOnlineRequest.CheckinTime);
 
-            if (schedule == null)
-            {
-                return new Response<string>
+                if (EndCheckinDateAt == CheckinDate)
                 {
-                    Message = "Not Found",
-                    Status = 404,
-                    Data = ""
-                };
+                    return new Response<string>
+                    {
+                        Message = "Conflict",
+                        Status = 409,
+                        Data = ""
+                    };
+                }
             }
+            */
+            
 
             //Get TimeOnly Data
-            TimeOnly EndCheckinAt = TimeOnly.FromDateTime(schedule.EndCheckinAt);
+            TimeOnly EndCheckinAt = new TimeOnly(8,30);
             TimeOnly Checkin = TimeOnly.FromDateTime(postCheckinOnlineRequest.CheckinTime);
 
             //Check is late
@@ -64,7 +69,6 @@ namespace JwtWebApiTutorial.Services
 
             //Create Attendance
             attendance.UserId = postCheckinOnlineRequest.UserId;
-            attendance.ScheduleId = postCheckinOnlineRequest.ScheduleId;
             attendance.CheckinAt = postCheckinOnlineRequest.CheckinTime;
             attendance.LocationCheckin = postCheckinOnlineRequest.Location;
             attendance.DescriptionCheckin = postCheckinOnlineRequest.Description;
@@ -97,9 +101,6 @@ namespace JwtWebApiTutorial.Services
         {
             var LastAttendance = _dbContext.Attendances.OrderByDescending(x => x.Id).FirstOrDefault(x => x.UserId == postCheckoutOnlineRequest.UserId);
 
-            DateOnly checkoutTime = DateOnly.FromDateTime(postCheckoutOnlineRequest.CheckoutTime);
-            DateOnly checkinTime = DateOnly.FromDateTime(LastAttendance.CheckinAt);
-            //Check either the table user is null or not
             if (LastAttendance == null)
             {
                 return new Response<string>
@@ -109,7 +110,11 @@ namespace JwtWebApiTutorial.Services
                     Data = ""
                 };
             }
-            else if (checkinTime != checkoutTime)
+
+            DateOnly checkoutTime = DateOnly.FromDateTime(postCheckoutOnlineRequest.CheckoutTime);
+            DateOnly checkinTime = DateOnly.FromDateTime(LastAttendance.CheckinAt);
+
+            if (checkinTime != checkoutTime)
             {
                 return new Response<string>
                 {
@@ -136,17 +141,29 @@ namespace JwtWebApiTutorial.Services
         public async Task<Response<string>> CheckinOffline(PostCheckinOfflineRequest postCheckinOfflineRequest)
         {
             Attendance attendance = new Attendance();
-            var LastAttendance = _dbContext.Attendances.OrderByDescending(x => x.Id).FirstOrDefault();
-            var schedule = _dbContext.AttendanceSchedules.FirstOrDefault(x => x.Id == postCheckinOfflineRequest.ScheduleId);
+            var LastAttendance = _dbContext.Attendances.Where(u => u.UserId == postCheckinOfflineRequest.UserId).OrderByDescending(u => u.Id).FirstOrDefault();
 
-            //Check either the table user is null or not
-            if (LastAttendance != null)
+            /*
+            if (!(LastAttendance == null))
             {
-                attendance.Id = LastAttendance.Id + 1;
+                //Get DateOnly Data
+                DateOnly EndCheckinDateAt = DateOnly.FromDateTime(LastAttendance.CheckinAt);
+                DateOnly CheckinDate = DateOnly.FromDateTime(postCheckinOfflineRequest.CheckinTime);
+
+                if (EndCheckinDateAt == CheckinDate)
+                {
+                    return new Response<string>
+                    {
+                        Message = "Conflict",
+                        Status = 409,
+                        Data = ""
+                    };
+                }
             }
+            */
 
             //Get TimeOnly Data
-            TimeOnly EndCheckinAt = TimeOnly.FromDateTime(schedule.EndCheckinAt);
+            TimeOnly EndCheckinAt = new TimeOnly(8, 30);
             TimeOnly Checkin = TimeOnly.FromDateTime(postCheckinOfflineRequest.CheckinTime);
 
             //Check is late
@@ -161,7 +178,6 @@ namespace JwtWebApiTutorial.Services
 
             //Create Attendance
             attendance.UserId = postCheckinOfflineRequest.UserId;
-            attendance.ScheduleId = postCheckinOfflineRequest.ScheduleId;
             attendance.CheckinAt = postCheckinOfflineRequest.CheckinTime;
             attendance.LocationCheckin = postCheckinOfflineRequest.Location;
             attendance.DescriptionCheckin = postCheckinOfflineRequest.Description;
@@ -182,9 +198,6 @@ namespace JwtWebApiTutorial.Services
         {
             var LastAttendance = _dbContext.Attendances.OrderByDescending(x => x.Id).FirstOrDefault(x => x.UserId == postCheckoutOfflineRequest.UserId);
 
-            DateOnly checkoutTime = DateOnly.FromDateTime(postCheckoutOfflineRequest.CheckoutTime);
-            DateOnly checkinTime = DateOnly.FromDateTime(LastAttendance.CheckinAt);
-            //Check either the table user is null or not
             if (LastAttendance == null)
             {
                 return new Response<string>
@@ -194,7 +207,11 @@ namespace JwtWebApiTutorial.Services
                     Data = ""
                 };
             }
-            else if (checkinTime != checkoutTime)
+
+            DateOnly checkoutTime = DateOnly.FromDateTime(postCheckoutOfflineRequest.CheckoutTime);
+            DateOnly checkinTime = DateOnly.FromDateTime(LastAttendance.CheckinAt);
+
+            if (checkinTime != checkoutTime)
             {
                 return new Response<string>
                 {
@@ -204,7 +221,7 @@ namespace JwtWebApiTutorial.Services
                 };
             }
 
-                LastAttendance.CheckoutAt = postCheckoutOfflineRequest.CheckoutTime;
+            LastAttendance.CheckoutAt = postCheckoutOfflineRequest.CheckoutTime;
             LastAttendance.LocationCheckout = postCheckoutOfflineRequest.Location;
             LastAttendance.DescriptionCheckout = postCheckoutOfflineRequest.Description;
 
@@ -252,6 +269,109 @@ namespace JwtWebApiTutorial.Services
                 Status = 200,
                 Data = result
             };
+        }
+
+        public async Task<Response<string>> CheckQRCode(PostQRCodeRequest request)
+        {
+            Debug.WriteLine("TypeQRCode : " + request.TypeQRCode);
+            Debug.WriteLine("QRCodeValue : " + request.QRCodeValue);
+            if (request.TypeQRCode == "Checkin")
+            {
+                var activeQRCodeCheckin = await _dbContext.ApplicationSettings.FirstOrDefaultAsync(x => x.SettingName == "QRCodeCheckin");
+                if (activeQRCodeCheckin == null)
+                {
+                    return new Response<string>
+                    {
+                        Message = "Not found",
+                        Status = 404,
+                        Data = ""
+                    };
+                }
+
+                if (request.QRCodeValue == activeQRCodeCheckin.SettingValue)
+                {
+                    return new Response<string>
+                    {
+                        Message = "OK",
+                        Status = 200,
+                        Data = ""
+                    };
+                }
+                else
+                {
+                    return new Response<string>
+                    {
+                        Message = "Unauthorized",
+                        Status = 401,
+                        Data = "",
+                    };
+                }
+            }
+            else if (request.TypeQRCode == "Checkout")
+            {
+                var activeQRCodeCheckout = await _dbContext.ApplicationSettings.FirstOrDefaultAsync(x => x.SettingName == "QRCodeCheckout");
+                if (activeQRCodeCheckout == null)
+                {
+                    return new Response<string>
+                    {
+                        Message = "Not found",
+                        Status = 404,
+                        Data = ""
+                    };
+                }
+
+                if (request.QRCodeValue == activeQRCodeCheckout.SettingValue)
+                {
+                    return new Response<string>
+                    {
+                        Message = "OK",
+                        Status = 200,
+                        Data = ""
+                    };
+                }
+                else
+                {
+                    return new Response<string>
+                    {
+                        Message = "Unauthorized",
+                        Status = 401,
+                        Data = "",
+                    };
+                }
+            }
+            else
+            {
+                return new Response<string>
+                {
+                    Message = "Unauthorized",
+                    Status = 401,
+                    Data = "",
+                };
+            }
+        }
+
+        public async Task<Response<string>> CheckinStatus (DateTime request)
+        {
+            TimeOnly checkinTime = TimeOnly.FromDateTime(request);
+            TimeOnly startCheckinAt = new TimeOnly(6, 0);
+            if (checkinTime < startCheckinAt)
+            {
+                return new Response<string>
+                {
+                    Message = "Unauthorized",
+                    Status = 401,
+                    Data = "",
+                };
+            }
+            else
+            {
+                return new Response<string>
+                {
+                    Message = "OK",
+                    Status = 200,
+                    Data = ""
+                };
+            }
         }
     }
 }

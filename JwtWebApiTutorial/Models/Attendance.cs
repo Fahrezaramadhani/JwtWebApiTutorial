@@ -20,10 +20,6 @@ namespace JwtWebApiTutorial.Models
         [Column(TypeName = "varchar(100)")]
         public string PhotoName { get; set; } = string.Empty;
 
-        //Foreign Key for schedule id 
-        public AttendanceSchedule Schedule { get; set; }
-        public int ScheduleId { get; set; }
-
         //Foreign key for user id
         public User User { get; set; }
         public int UserId { get; set; }

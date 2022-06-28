@@ -6,7 +6,8 @@ namespace JwtWebApiTutorial.Services.Interface
 {
     public interface IAuthService
     {
-        Task<Response<PostLoginResponse>> Login(PostLoginRequest loginRequest);
+        Task<Response<PostLoginResponse>> LoginMobile(PostLoginRequest loginRequest);
+        Task<Response<PostLoginResponse>> LoginWeb(PostLoginRequest loginRequest);
         Task<Response<PostRefreshResponse>> Refresh(string refreshRequest);
     }
 }

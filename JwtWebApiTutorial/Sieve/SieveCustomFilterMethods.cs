@@ -2,6 +2,8 @@
 // Copyright (c) CV Garuda Infinity Kreasindo. All rights reserved.
 // </copyright>
 
+using JwtWebApiTutorial.Data;
+using JwtWebApiTutorial.Models;
 using Sieve.Services;
 
 namespace JwtWebApiTutorial.Sieve

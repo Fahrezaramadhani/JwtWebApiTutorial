@@ -6,6 +6,7 @@ using JwtWebApiTutorial.Responses;
 using JwtWebApiTutorial.Responses.ApplicationSettings;
 using JwtWebApiTutorial.Services.Interface;
 using JwtWebApiTutorial.Sieve;
+using Microsoft.EntityFrameworkCore;
 
 namespace JwtWebApiTutorial.Services
 {
@@ -68,6 +69,65 @@ namespace JwtWebApiTutorial.Services
             response = _mapper.Map<GetApplicationSettingResponse>(_applicationSetting);
 
             return new Response<GetApplicationSettingResponse>
+            {
+                Message = "OK",
+                Status = 200,
+                Data = response
+            };
+        }
+
+        public async Task<Response<string>> SetQRSetting(PostQRCodeRequest request)
+        {
+            if (request.TypeQRCode == "Checkin")
+            {
+                var _QRSetting = await _dbContext.ApplicationSettings.FirstOrDefaultAsync(x => x.SettingName == "QRCodeCheckin");
+                _QRSetting.SettingValue = request.QRCodeValue;
+
+                _dbContext.ApplicationSettings.Update(_QRSetting);
+                await _dbContext.SaveChangesAsync();
+                return new Response<string>
+                {
+                    Message = "OK",
+                    Status = 200,
+                    Data = ""
+                };
+            }
+            else
+            {
+                var _QRSetting = await _dbContext.ApplicationSettings.FirstOrDefaultAsync(x => x.SettingName == "QRCodeCheckout");
+                _QRSetting.SettingValue = request.QRCodeValue;
+
+                _dbContext.ApplicationSettings.Update(_QRSetting);
+                await _dbContext.SaveChangesAsync();
+                return new Response<string>
+                {
+                    Message = "OK",
+                    Status = 200,
+                    Data = ""
+                };
+            }
+        }
+
+        public async Task<Response<GetQRSettingResponse>> GetQRSetting()
+        {
+            var _QRCheckinSetting = await _dbContext.ApplicationSettings.FirstOrDefaultAsync(x => x.SettingName == "QRCodeCheckin");
+            var _QRCheckoutSetting = await _dbContext.ApplicationSettings.FirstOrDefaultAsync(x => x.SettingName == "QRCodeCheckout");
+            GetQRSettingResponse response = new GetQRSettingResponse();
+
+            if (_QRCheckinSetting == null || _QRCheckoutSetting == null)
+            {
+                return new Response<GetQRSettingResponse>
+                {
+                    Message = "Not found",
+                    Status = 404,
+                    Data = response
+                };
+            }
+
+            response.BeginningQRCodeData = _QRCheckinSetting.SettingValue;
+            response.EndQRCodeData = _QRCheckoutSetting.SettingValue;
+
+            return new Response<GetQRSettingResponse>
             {
                 Message = "OK",
                 Status = 200,

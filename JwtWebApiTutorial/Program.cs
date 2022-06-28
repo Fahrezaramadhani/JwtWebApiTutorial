@@ -2,6 +2,8 @@ using AutoMapper;
 using JwtWebApiTutorial.Configurations;
 using JwtWebApiTutorial.Data;
 using JwtWebApiTutorial.Mappers;
+using JwtWebApiTutorial.Models;
+using JwtWebApiTutorial.Responses.SubmissionLeave;
 using JwtWebApiTutorial.Services;
 using JwtWebApiTutorial.Services.Interface;
 using JwtWebApiTutorial.Sieve;
@@ -45,22 +47,28 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 
 // Add Dependency Injection for Services
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IScheduleService, ScheduleService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<IPositionService, PositionService>();
+builder.Services.AddScoped<IReligionService, ReligionService>();
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 builder.Services.AddScoped<IActivityRecordService, ActivityRecordService>();
-builder.Services.AddScoped<IActivityRecordScheduleService, ActivityRecordScheduleService>();
 builder.Services.AddScoped<IApplicationSettingService, ApplicationSettingService>();
+builder.Services.AddScoped<ISubmissionService, SubmissionService>();
+builder.Services.AddScoped<ISubmissionLeaveService, SubmissionLeaveService>();
 
 //AutoMapper configuration
 builder.Services.AddScoped(provider => new MapperConfiguration(cfg =>
 {
     cfg.AddProfile(new UserProfile());
+    cfg.AddProfile(new PositionProfile());
+    cfg.AddProfile(new ReligionProfile());
     cfg.AddProfile(new AttendanceProfile());
-    cfg.AddProfile(new ScheduleProfile());
     cfg.AddProfile(new ActivityRecordProfile());
-    cfg.AddProfile(new ActivityRecordScheduleProfile());
     cfg.AddProfile(new ApplicationSettingProfile());
+    cfg.AddProfile(new SubmissionProfile());
+    cfg.AddProfile(new SubmissionLeaveProfile());
+    cfg.AddProfile(new SubmissionAttributeProfile());
 }).CreateMapper());
 
 //Sieve configuration

@@ -7,6 +7,7 @@ using JwtWebApiTutorial.Requests.Auth;
 using JwtWebApiTutorial.Responses;
 using JwtWebApiTutorial.Responses.Auths;
 using JwtWebApiTutorial.Services.Interface;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.IdentityModel.Tokens.Jwt;
 
@@ -24,14 +25,14 @@ namespace JwtWebApiTutorial.Services
             _mapper = mapper;
         }
 
-        public async Task<Response<PostLoginResponse>> Login(PostLoginRequest loginRequest)
+        public async Task<Response<PostLoginResponse>> LoginMobile(PostLoginRequest loginRequest)
         {
-            var _user = _dbContext.Users.FirstOrDefault(u => u.Email == loginRequest.Email);
+            var _user = await _dbContext.Users.Include(u => u.Position).FirstOrDefaultAsync(u => u.Email == loginRequest.Email);
 
             PostLoginResponse postLoginResponse = new PostLoginResponse();
 
             //Check either the user is found or not
-            if (_user == null || _user.Status == "RESIGN")
+            if (_user == null || _user.Status == "Resign")
             {
                 return new Response<PostLoginResponse>
                 {
@@ -43,7 +44,64 @@ namespace JwtWebApiTutorial.Services
 
             //Check either the password is correct or not
             var IsValid = AuthenticationHelper.VerifyPassword(loginRequest.Password, _user.Password);
-            if (!IsValid)
+            if (!IsValid || _user.Role == "Admin")
+            {
+                return new Response<PostLoginResponse>
+                {
+                    Message = "Unauthorized",
+                    Status = 401,
+                    Data = postLoginResponse,
+                };
+            }
+
+            //Create token for access token
+            var token = AuthenticationHelper.GenerateJwtToken(
+                _user.Id,
+                _jwtConfiguration.SecretKey,
+                DateTime.UtcNow.AddMinutes(_jwtConfiguration.ExpirationTime));
+
+            //Create token for refresh token
+            var refreshToken = AuthenticationHelper.GenerateJwtToken(
+                _user.Id,
+                _jwtConfiguration.RefreshSecretKey,
+                DateTime.UtcNow.AddDays(_jwtConfiguration.RefreshExpirationTime));
+
+            //Add user data to user profile
+            postLoginResponse = _mapper.Map<PostLoginResponse>(_user);
+            postLoginResponse.AccessToken = token;
+            postLoginResponse.RefreshToken = refreshToken;
+
+            _user.RefreshToken = refreshToken;
+            await _dbContext.SaveChangesAsync();
+
+            return new Response<PostLoginResponse>
+            {
+                Message = "OK",
+                Status = 200,
+                Data = postLoginResponse
+            };
+        }
+
+        public async Task<Response<PostLoginResponse>> LoginWeb(PostLoginRequest loginRequest)
+        {
+            var _user = await _dbContext.Users.Include(u => u.Position).FirstOrDefaultAsync(u => u.Email == loginRequest.Email);
+
+            PostLoginResponse postLoginResponse = new PostLoginResponse();
+
+            //Check either the user is found or not
+            if (_user == null || _user.Status == "Resign")
+            {
+                return new Response<PostLoginResponse>
+                {
+                    Message = "User not found",
+                    Status = 404,
+                    Data = postLoginResponse,
+                };
+            }
+
+            //Check either the password is correct or not
+            var IsValid = AuthenticationHelper.VerifyPassword(loginRequest.Password, _user.Password);
+            if (!IsValid || _user.Role == "Employee")
             {
                 return new Response<PostLoginResponse>
                 {

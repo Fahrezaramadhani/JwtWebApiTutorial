@@ -14,11 +14,26 @@ namespace JwtWebApiTutorial.Data
 
         //Tables in Database
         public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<AttendanceSchedule> AttendanceSchedules { get; set; }
         public virtual DbSet<Attendance> Attendances { get; set; }
-        public virtual DbSet<ActivityRecordSchedule> ActivityRecordSchedules { get; set; }
         public virtual DbSet<ActivityRecord> ActivityRecords { get; set; }
         public virtual DbSet<ApplicationSetting> ApplicationSettings { get; set; }
+        public virtual DbSet<Approval> Approvals { get; set; }
+        public virtual DbSet<Submission> Submissions { get; set; }
+        public virtual DbSet<SubmissionLeave> SubmissionLeaves { get; set; }
+        public virtual DbSet<SubmissionAttribute> SubmissionAttributes { get; set; }
+        public virtual DbSet<Position> Positions { get; set; }
+        public virtual DbSet<Religion> Religions { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Submission>()
+            .HasOne(a => a.SubmissionAttribute).WithOne(b => b.Submission)
+            .HasForeignKey<SubmissionAttribute>(e => e.SubmissionId);
+
+            modelBuilder.Entity<SubmissionLeave>()
+            .HasOne(a => a.SubmissionAttribute).WithOne(b => b.SubmissionLeave)
+            .HasForeignKey<SubmissionAttribute>(e => e.SubmissionLeaveId);
+        }
 
         public override int SaveChanges()
         {

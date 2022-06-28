@@ -1,4 +1,5 @@
-﻿using JwtWebApiTutorial.Requests.Attendance;
+﻿using JwtWebApiTutorial.Requests.ApplicationSetting;
+using JwtWebApiTutorial.Requests.Attendance;
 using JwtWebApiTutorial.Responses;
 using JwtWebApiTutorial.Responses.Attendances;
 using Sieve.Models;
@@ -13,5 +14,7 @@ namespace JwtWebApiTutorial.Services.Interface
         Task<Response<string>> CheckoutOffline(PostCheckoutOfflineRequest postCheckoutOfflineRequest);
         Task<Response<PaginatedResponse<GetAllAttendanceResponse>>> GetPagedAttendanceList(SieveModel sieveModel);
         Task<Response<IEnumerable<GetAllAttendanceResponse>>> GetAttendanceList(SieveModel sieveModel);
+        Task<Response<string>> CheckQRCode(PostQRCodeRequest request);
+        Task<Response<string>> CheckinStatus(DateTime request);
     }
 }

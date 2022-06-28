@@ -53,5 +53,38 @@ namespace JwtWebApiTutorial.Controllers
                 return StatusCode((ex as HttpResponseException).Status, ex);
             }
         }
+
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [HttpGet("qr_setting")]
+        public async Task<ActionResult<Response<GetQRSettingResponse>>> GetQRSetting()
+        {
+            try
+            {
+                var result = await _service.GetQRSetting();
+
+                return Ok(result);
+            }
+            catch (HttpResponseException ex)
+            {
+                return StatusCode((ex as HttpResponseException).Status, ex);
+            }
+        }
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [HttpPost("qr_setting")]
+        public async Task<ActionResult<Response<string>>> SetQRSetting(PostQRCodeRequest request)
+        {
+            try
+            {
+                var result = await _service.SetQRSetting(request);
+
+                return Ok(result);
+            }
+            catch (HttpResponseException ex)
+            {
+                return StatusCode((ex as HttpResponseException).Status, ex);
+            }
+        }
     }
 }

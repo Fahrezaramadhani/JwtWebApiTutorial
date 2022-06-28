@@ -10,21 +10,22 @@ namespace JwtWebApiTutorial.Models
         [Column(TypeName = "varchar(50)")]
         public string Name { get; set; } = string.Empty;
 
-        [Column(TypeName = "varchar(15)")]
-        public string Religion { get; set; } = string.Empty;
+        public Religion Religion { get; set; }
+        public int ReligionId { get; set; }
 
-        [Column(TypeName = "varchar(25)")]
-        public string Position { get; set; } = string.Empty;
-        public int CurrentSalary { get; set; }
+        public Position Position { get; set; }
+        public int PositionId { get; set; }
+
+        [Column(TypeName = "varchar(10)")]
+        public string Gender { get; set; } = string.Empty;
 
         [Column(TypeName = "varchar(25)")]
         public string Status { get; set; } = string.Empty;
 
         [Column(TypeName = "Date")]
         public DateTime JoinDate { get; set; }
-
         [Column(TypeName = "Date")]
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
         [Column(TypeName = "varchar(20)")]
         public string PhoneNumber { get; set; } = string.Empty;
@@ -42,7 +43,7 @@ namespace JwtWebApiTutorial.Models
         public string NoKTP { get; set; } = string.Empty;
 
         [Column(TypeName = "varchar(20)")]
-        public string NPWP { get; set; } = string.Empty;
+        public string? NPWP { get; set; } = string.Empty;
 
         [Column(TypeName = "Date")]
         public DateTime DateOfBirth { get; set; }
@@ -58,13 +59,6 @@ namespace JwtWebApiTutorial.Models
 
         [Column(TypeName = "varchar(250)")]
         public string RefreshToken { get; set; } = string.Empty;
-
-
-
-        //Foreign key for schedule
-        public AttendanceSchedule Schedule { get; set; }
-        public int ScheduleId { get; set; }
-
         public int SuperiorId { get; set; }
 
         public DateTime CreatedAt { get; set; }
@@ -79,5 +73,11 @@ namespace JwtWebApiTutorial.Models
 
         [Column(TypeName = "varchar(50)")]
         public string DeletedBy { get; set; } = string.Empty;
+
+
+        // 1 to many relationship
+        public List<Attendance> Attendances { get; set; }
+        public List<ActivityRecord> ActivityRecords { get; set; }
+        public List<SubmissionAttribute> SubmissionAttributes { get; set; }
     }
 }

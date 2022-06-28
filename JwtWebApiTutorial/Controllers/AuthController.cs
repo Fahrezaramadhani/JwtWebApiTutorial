@@ -28,12 +28,29 @@ namespace JwtWebApiTutorial.Controllers
 
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
-        [HttpPost("login")]
-        public async Task<ActionResult<Response<PostLoginResponse>>> Login(PostLoginRequest loginRequest)
+        [HttpPost("login_mobile")]
+        public async Task<ActionResult<Response<PostLoginResponse>>> LoginMobile(PostLoginRequest loginRequest)
         {
             try
             {
-                var result = await _service.Login(loginRequest);
+                var result = await _service.LoginMobile(loginRequest);
+
+                return Ok(result);
+            }
+            catch (HttpResponseException ex)
+            {
+                return StatusCode((ex as HttpResponseException).Status, ex);
+            }
+        }
+
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [HttpPost("login_web")]
+        public async Task<ActionResult<Response<PostLoginResponse>>> LoginWeb(PostLoginRequest loginRequest)
+        {
+            try
+            {
+                var result = await _service.LoginWeb(loginRequest);
 
                 return Ok(result);
             }

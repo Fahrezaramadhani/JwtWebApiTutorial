@@ -1,4 +1,5 @@
 ﻿using JwtWebApiTutorial.Exceptions;
+using JwtWebApiTutorial.Requests.ApplicationSetting;
 using JwtWebApiTutorial.Requests.Attendance;
 using JwtWebApiTutorial.Responses;
 using JwtWebApiTutorial.Responses.Attendances;
@@ -88,7 +89,7 @@ namespace JwtWebApiTutorial.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<Response<PaginatedResponse<GetAllAttendanceResponse>>>> GetUserList([FromQuery] SieveModel sieveModel)
+        public async Task<ActionResult<Response<PaginatedResponse<GetAllAttendanceResponse>>>> GetAttendanceList([FromQuery] SieveModel sieveModel)
         {
             if (sieveModel.PageSize == null)
             {
@@ -96,6 +97,36 @@ namespace JwtWebApiTutorial.Controllers
             }
 
             return Ok(await _service.GetPagedAttendanceList(sieveModel));
+        }
+
+        [HttpPost("check_QRCode_attendance")]
+        public async Task<ActionResult<Response<string>>> CheckQRCode(PostQRCodeRequest request)
+        {
+            try
+            {
+                var result = await _service.CheckQRCode(request);
+
+                return Ok(result);
+            }
+            catch (HttpResponseException ex)
+            {
+                return StatusCode((ex as HttpResponseException).Status, ex);
+            }
+        }
+
+        [HttpGet("check_status")]
+        public async Task<ActionResult<Response<string>>> CheckinStatus(DateTime request)
+        {
+            try
+            {
+                var result = await _service.CheckinStatus(request);
+
+                return Ok(result);
+            }
+            catch (HttpResponseException ex)
+            {
+                return StatusCode((ex as HttpResponseException).Status, ex);
+            }
         }
     }
 }

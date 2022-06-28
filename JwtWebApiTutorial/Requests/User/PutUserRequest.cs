@@ -3,15 +3,14 @@
     public class PutUserRequest
     {
         public int UserId { get; set; }
-        public int ScheduleId { get; set; }
         public int SuperiorId { get; set; }
         public string Name { get; set; } = string.Empty;
-        public string Religion { get; set; } = string.Empty;
-        public string Position { get; set; } = string.Empty;
-        public int CurrentSalary { get; set; }
+        public string Religion { get; set; }
+        public string Position { get; set; }
+        public string Gender { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
         public DateTime JoinDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public string PhoneNumber { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;

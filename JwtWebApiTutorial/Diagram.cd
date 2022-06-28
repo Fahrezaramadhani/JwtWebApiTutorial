@@ -174,7 +174,7 @@
   <Class Name="JwtWebApiTutorial.Controllers.AttendanceController">
     <Position X="19.75" Y="5.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAQAAIAgAAAAAAAAAhACAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAgQAAIAgAAAAAAAAABACAAAAAAAAAA=</HashCode>
       <FileName>Controllers\AttendanceController.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -206,6 +206,16 @@
     <TypeIdentifier>
       <HashCode>AAQAAAAAAAAAAABQAAAAAAAAAAEAAEgAAAAAAAAAAAA=</HashCode>
       <FileName>Controllers\UserController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_service" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="JwtWebApiTutorial.Controllers.ApplicationSettingController">
+    <Position X="25" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABQAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\ApplicationSettingController.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Field Name="_service" />
@@ -251,6 +261,13 @@
     <TypeIdentifier>
       <HashCode>AAYAAAAAAAAAAABAAAAABAAAAAEAAAAAAAAABAAAAAA=</HashCode>
       <FileName>Services\Interface\IScheduleService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="JwtWebApiTutorial.Services.Interface.IApplicationSettingService">
+    <Position X="27.5" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Interface\IApplicationSettingService.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />

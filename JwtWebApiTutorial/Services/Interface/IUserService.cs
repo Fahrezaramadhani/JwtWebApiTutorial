@@ -13,5 +13,6 @@ namespace JwtWebApiTutorial.Services.Interface
         Task<Response<IEnumerable<GetAllUserResponse>>> GetUserList(SieveModel sieveModel);
         Task<Response<string>> Update(PutUserRequest putUserRequest);
         Task<Response<string>> Delete(int id);
+        public Task<Response<List<GetSuperiorResponse>>> GetSuperiorList();
     }
 }

@@ -8,5 +8,7 @@ namespace JwtWebApiTutorial.Services.Interface
     {
         Task<Response<string>> Add(PostApplicationSettingRequest postApplicationSettingRequest);
         Task<Response<GetApplicationSettingResponse>> Get(int id);
+        Task<Response<string>> SetQRSetting(PostQRCodeRequest request);
+        Task<Response<GetQRSettingResponse>> GetQRSetting();
     }
 }

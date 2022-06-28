@@ -15,10 +15,6 @@ namespace JwtWebApiTutorial.Models
         [Column(TypeName = "varchar(150)")]
         public string Location { get; set; }
 
-        //Foreign key for ActivityRecordSchedule
-        public ActivityRecordSchedule ActivityRecordSchedule { get; set; }
-        public int ActivityRecordScheduleId { get; set; }
-
         //Foreign key for User
         public User User { get; set; }
         public int UserId { get; set; }

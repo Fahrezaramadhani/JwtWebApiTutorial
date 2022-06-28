@@ -10,17 +10,32 @@ namespace JwtWebApiTutorial.Mappers
     {
         public UserProfile()
         {
-            CreateMap<User, PostLoginResponse>(); 
+            CreateMap<User, PostLoginResponse>()
+                .ForMember(dest =>
+                    dest.Position,
+                    opt => opt.MapFrom(src => src.Position.PositionName)); 
 
             CreateMap<User, GetUserResponse>()
                 .ForMember(dest =>
                     dest.UserId,
-                    opt => opt.MapFrom(src => src.Id));
+                    opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest =>
+                    dest.Position,
+                    opt => opt.MapFrom(src => src.Position.PositionName))
+                .ForMember(dest =>
+                    dest.Religion,
+                    opt => opt.MapFrom(src => src.Religion.ReligionName));
 
             CreateMap<User, GetAllUserResponse>()
                 .ForMember(dest =>
                     dest.UserId,
-                    opt => opt.MapFrom(src => src.Id));
+                    opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest =>
+                    dest.Position,
+                    opt => opt.MapFrom(src => src.Position.PositionName))
+                .ForMember(dest =>
+                    dest.Religion,
+                    opt => opt.MapFrom(src => src.Religion.ReligionName));
 
             CreateMap<PostUserRequest, User>();
 

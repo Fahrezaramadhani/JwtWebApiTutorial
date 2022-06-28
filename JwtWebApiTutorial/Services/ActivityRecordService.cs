@@ -29,23 +29,11 @@ namespace JwtWebApiTutorial.Services
         public async Task<Response<string>> Add(PostActivityRecordRequest postActivityRecordRequest)
         {
             var activityRecord = _mapper.Map<ActivityRecord>(postActivityRecordRequest);
-            var activeSchedule = await _dbContext.ApplicationSettings.FirstOrDefaultAsync(x => x.SettingName == "ActivityRecordSchedule");
-            var activityRecordSchedule = await _dbContext.ActivityRecordSchedules.FirstOrDefaultAsync(x => x.Id == int.Parse(activeSchedule.SettingValue));
-
-            if (activityRecordSchedule == null)
-            {
-                return new Response<string>
-                {
-                    Message = "Not Found",
-                    Status = 404,
-                    Data = ""
-                };
-            }
-
-            int numberTime = determineTime(activityRecord.Date, activityRecordSchedule);
+            int numberTime = determineTime(activityRecord.Date);
             var findActivityRecord = await _dbContext.ActivityRecords.Where(x => x.UserId == activityRecord.UserId).OrderByDescending(x => x.Id).Take(3).ToListAsync();
 
             //findActivityRecord.Any()
+            /*
             if (findActivityRecord.Any())
             {
                 foreach (var activityRecords in findActivityRecord)
@@ -68,10 +56,10 @@ namespace JwtWebApiTutorial.Services
                     Status = 409,
                     Data = ""
                 };
-                */
+                
             }
-
-            activityRecord.ActivityRecordScheduleId = int.Parse(activeSchedule.SettingValue);
+            */
+            
             activityRecord.WhatTimeIs = numberTime;
 
             if (!string.IsNullOrWhiteSpace(activityRecord.PhotoName) && UploadImageHelper.IsBase64(activityRecord.PhotoName))
@@ -158,12 +146,12 @@ namespace JwtWebApiTutorial.Services
             };
         }
 
-        public int determineTime (DateTime activityRecord, ActivityRecordSchedule schedule)
+        public int determineTime (DateTime activityRecord)
         {
             TimeOnly date = TimeOnly.FromDateTime(activityRecord);
-            TimeOnly scheduleTime1 = TimeOnly.FromDateTime(schedule.TimeNo1);
-            TimeOnly scheduleTime2 = TimeOnly.FromDateTime(schedule.TimeNo2);
-            TimeOnly scheduleTime3 = TimeOnly.FromDateTime(schedule.TimeNo3);
+            TimeOnly scheduleTime1 = new TimeOnly(9, 0);
+            TimeOnly scheduleTime2 = new TimeOnly(13, 0);
+            TimeOnly scheduleTime3 = new TimeOnly(16, 0);
 
             if (date >= scheduleTime1 && date < scheduleTime2)
             {

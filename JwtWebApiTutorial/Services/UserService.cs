@@ -36,14 +36,26 @@ namespace JwtWebApiTutorial.Services
             if (data.PhotoName == string.Empty || data.PhotoName == null)
             {
                 data.PhotoName = ImageConstant.DEFAULTIMAGE;
-                data.PhotoName = UploadImageHelper.UploadBase64File("DefaultImage", data.PhotoName, "Images/User");
+                data.PhotoName = UploadImageHelper.UploadBase64File($"{DateTime.Now:yyyyMMddhhmmss}", data.PhotoName, "Images/User");
+            }
+
+            if (data.Status == "Permanent")
+            {
+                data.EndDate = new DateTime(0001, 01, 01);
             }
 
             var user = _mapper.Map<User>(data);
+
             user.Password = AuthenticationHelper.EncryptPassword(data.Password);
 
             if (!_dbContext.Users.Any(x => x.Email == user.Email))
             {
+                var userSuperior = _dbContext.Users.FirstOrDefault(x => x.Id == user.SuperiorId);
+                if (userSuperior != null)
+                {
+                    userSuperior.SuperiorId = 0;
+                    _dbContext.Users.Update(userSuperior);
+                }
                 _dbContext.Users.Add(user);
                 await _dbContext.SaveChangesAsync();
             }
@@ -67,7 +79,7 @@ namespace JwtWebApiTutorial.Services
 
         public async Task<Response<GetUserResponse>> Get(int id)
         {
-            var _user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
+            var _user = await _dbContext.Users.Include(p => p.Position).Include(r => r.Religion).FirstOrDefaultAsync(x => x.Id == id);
 
             GetUserResponse getUserResponse = new GetUserResponse();
 
@@ -92,9 +104,41 @@ namespace JwtWebApiTutorial.Services
             };
         }
 
+        public async Task<Response<List<GetSuperiorResponse>>> GetSuperiorList()
+        {
+            var _users = await _dbContext.Users.Where(u => u.Role == "Employee" && u.Status != "Resign").ToListAsync();
+            List<GetSuperiorResponse> users = new List<GetSuperiorResponse>();
+            if (_users.Any())
+            {
+                foreach (var user in _users)
+                {
+                    GetSuperiorResponse superior = new GetSuperiorResponse();
+                    superior.UserId = user.Id;
+                    superior.UserName = user.Name;
+                    users.Add(superior);
+                }
+
+                return new Response<List<GetSuperiorResponse>>
+                {
+                    Message = "OK",
+                    Status = 200,
+                    Data = users
+                };
+            }
+            else
+            {
+                return new Response<List<GetSuperiorResponse>>
+                {
+                    Message = "OK",
+                    Status = 200,
+                    Data = users
+                };
+            }
+        }
+
         public async Task<Response<string>> Update(PutUserRequest putUserRequest)
         {
-            var _user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == putUserRequest.UserId);
+            var _user = _dbContext.Users.FirstOrDefault(x => x.Id == putUserRequest.UserId);
 
             //Check either the table schedule is null or not
             if (_user == null)
@@ -107,7 +151,66 @@ namespace JwtWebApiTutorial.Services
                 };
             }
 
-            _dbContext.Users.Update(_mapper.Map<User>(putUserRequest));
+            if (_user.PhotoName != putUserRequest.PhotoName)
+            {
+                UploadImageHelper.DeleteImage(_user.PhotoName);
+                if (!string.IsNullOrWhiteSpace(putUserRequest.PhotoName) && UploadImageHelper.IsBase64(putUserRequest.PhotoName))
+                {
+                    putUserRequest.PhotoName = UploadImageHelper.UploadBase64File($"{DateTime.Now:yyyyMMddhhmmss}", putUserRequest.PhotoName, "Images/User");
+                }
+
+                if (putUserRequest.PhotoName == string.Empty || putUserRequest.PhotoName == null)
+                {
+                    putUserRequest.PhotoName = ImageConstant.DEFAULTIMAGE;
+                    putUserRequest.PhotoName = UploadImageHelper.UploadBase64File($"{DateTime.Now:yyyyMMddhhmmss}", putUserRequest.PhotoName, "Images/User");
+                }
+            }
+
+            if (putUserRequest.Password == "")
+            {
+                putUserRequest.Password = _user.Password;
+            }
+            else
+            {
+                putUserRequest.Password = AuthenticationHelper.EncryptPassword(putUserRequest.Password);
+            }
+
+            var position = _dbContext.Positions.Where(u => u.PositionName == putUserRequest.Position).FirstOrDefault();
+            var religion = _dbContext.Religions.Where(u => u.ReligionName == putUserRequest.Religion).FirstOrDefault();
+            if (putUserRequest.Status == "Permanent")
+            {
+                putUserRequest.EndDate = new DateTime(0001, 01, 01);
+            }
+            _user.Name = putUserRequest.Name;
+            _user.Email = putUserRequest.Email;
+            _user.Password = putUserRequest.Password;
+            _user.NoKTP = putUserRequest.NoKtp;
+            _user.Address = putUserRequest.Address;
+            _user.City = putUserRequest.City;
+            _user.Role = putUserRequest.Role;
+            _user.Gender = putUserRequest.Gender;
+            _user.DateOfBirth = putUserRequest.DateOfBirth;
+            _user.JoinDate = putUserRequest.JoinDate;
+            _user.EndDate = putUserRequest.EndDate;
+            _user.PhoneNumber = putUserRequest.PhoneNumber;
+            _user.PhotoName = putUserRequest.PhotoName;
+            _user.SuperiorId = putUserRequest.SuperiorId;
+            _user.Status = putUserRequest.Status;
+            _user.ReligionId = religion.Id;
+            _user.PositionId = position.Id;
+            _user.NPWP = putUserRequest.Npwp;
+            var userSuperior = _dbContext.Users.FirstOrDefault(x => x.Id == _user.SuperiorId);
+            if (userSuperior != null)
+            {
+                userSuperior.SuperiorId = 0;
+                _dbContext.Users.Update(userSuperior);
+            }
+            /*
+            user.PositionId = position.Id;
+            user.ReligionId = religion.Id;
+            */
+
+            _dbContext.Users.Update(_user);
             await _dbContext.SaveChangesAsync();
             return new Response<string>
             {
@@ -132,7 +235,7 @@ namespace JwtWebApiTutorial.Services
                 };
             }
 
-            _user.Status = "RESIGN";
+            _user.Status = "Resign";
             await _dbContext.SaveChangesAsync();
 
             return new Response<string>
@@ -145,7 +248,7 @@ namespace JwtWebApiTutorial.Services
 
         public async Task<Response<PaginatedResponse<GetAllUserResponse>>> GetPagedUserList(SieveModel sieveModel)
         {
-            var users = _dbContext.Users.AsNoTracking();
+            var users = _dbContext.Users.Include(p => p.Position).Include(r => r.Religion).AsNoTracking();
 
             users = _sieveProcessor.Apply(sieveModel, users, applyPagination: false);
 
@@ -165,7 +268,7 @@ namespace JwtWebApiTutorial.Services
 
         public async Task<Response<IEnumerable<GetAllUserResponse>>> GetUserList(SieveModel sieveModel)
         {
-            var users = _dbContext.Users.AsNoTracking();
+            var users = _dbContext.Users.Include(p => p.Position).Include(r => r.Religion).AsNoTracking();
 
             users = _sieveProcessor.Apply(sieveModel, users, applyPagination: false);
 
