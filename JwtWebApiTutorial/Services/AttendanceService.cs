@@ -55,7 +55,19 @@ namespace JwtWebApiTutorial.Services
 
             //Get TimeOnly Data
             TimeOnly EndCheckinAt = new TimeOnly(8,30);
+            TimeOnly LimitCheckinAt = new TimeOnly(17, 0);
             TimeOnly Checkin = TimeOnly.FromDateTime(postCheckinOnlineRequest.CheckinTime);
+
+            //Limit checkin
+            if (Checkin > LimitCheckinAt)
+            {
+                return new Response<string>
+                {
+                    Message = "Unauthorized",
+                    Status = 401,
+                    Data = "",
+                };
+            }
 
             //Check is late
             if (Checkin > EndCheckinAt)
@@ -164,7 +176,19 @@ namespace JwtWebApiTutorial.Services
 
             //Get TimeOnly Data
             TimeOnly EndCheckinAt = new TimeOnly(8, 30);
+            TimeOnly LimitCheckinAt = new TimeOnly(17, 0);
             TimeOnly Checkin = TimeOnly.FromDateTime(postCheckinOfflineRequest.CheckinTime);
+
+            //Limit checkin
+            if (Checkin > LimitCheckinAt)
+            {
+                return new Response<string>
+                {
+                    Message = "Unauthorized",
+                    Status = 401,
+                    Data = "",
+                };
+            }
 
             //Check is late
             if (Checkin > EndCheckinAt)

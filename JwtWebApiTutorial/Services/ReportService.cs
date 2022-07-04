@@ -24,9 +24,18 @@ namespace JwtWebApiTutorial.Services
         
         public async Task<Response<List<GetReportAttendanceResponse>>> GetReportAttendance(ReportModelRequest request)
         {
-            var DateTimeRequest = new DateTime(request.number_year, request.number_month, 1);
+            var DateTimeRequest = new DateTime();
+            if (DateTime.Now.Month.Equals(request.number_month) && DateTime.Now.Year.Equals(request.number_year))
+            {
+                DateTimeRequest = new DateTime(request.number_year, request.number_month, DateTime.Now.Day);
+            }
+            else
+            {
+                DateTimeRequest = new DateTime(request.number_year, request.number_month, DateTime.DaysInMonth(request.number_year, request.number_month));
+            }
             var _users = await _dbContext.Users.Include(u => u.Position).Where(u => (u.Role.Equals("HR") || u.Role.Equals("Employee"))
-                                                                                && u.JoinDate <= DateTimeRequest).ToListAsync();
+                                                                                && u.JoinDate <= DateTimeRequest 
+                                                                                && u.Status != "Resign").ToListAsync();
 
 
             List<GetReportAttendanceResponse> response = new List<GetReportAttendanceResponse>();
@@ -73,10 +82,18 @@ namespace JwtWebApiTutorial.Services
                             if (DateTime.Now.Year.Equals(request.number_year) && DateTime.Now.Month.Equals(request.number_month))
                             {
                                 endDayOfMonth = DateTime.Now.Day;
+                                if (user.EndDate.Value <= new DateTime(request.number_year, request.number_month, endDayOfMonth) && !user.EndDate.Value.Equals(new DateTime(0001,01,01)))
+                                {
+                                    endDayOfMonth = user.EndDate.Value.Day;
+                                }
                             }
                             else
                             {
                                 endDayOfMonth = DateTime.DaysInMonth(request.number_year, request.number_month);
+                                if (user.EndDate.Value <= new DateTime(request.number_year, request.number_month, endDayOfMonth) && !user.EndDate.Value.Equals(new DateTime(0001, 01, 01)))
+                                {
+                                    endDayOfMonth = user.EndDate.Value.Day;
+                                }
                             }
                             for (int i = 1; i <= endDayOfMonth; i++)
                             {
@@ -123,10 +140,18 @@ namespace JwtWebApiTutorial.Services
                             if (DateTime.Now.Year.Equals(request.number_year) && DateTime.Now.Month.Equals(request.number_month))
                             {
                                 endDayOfMonth = DateTime.Now.Day;
+                                if (user.EndDate.Value <= new DateTime(request.number_year, request.number_month, endDayOfMonth) && !user.EndDate.Value.Equals(new DateTime(0001, 01, 01)))
+                                {
+                                    endDayOfMonth = user.EndDate.Value.Day;
+                                }
                             }
                             else
                             {
                                 endDayOfMonth = DateTime.DaysInMonth(request.number_year, request.number_month);
+                                if (user.EndDate.Value <= new DateTime(request.number_year, request.number_month, endDayOfMonth) && !user.EndDate.Value.Equals(new DateTime(0001, 01, 01)))
+                                {
+                                    endDayOfMonth = user.EndDate.Value.Day;
+                                }
                             }
                             for (int i = JoinDate.Day; i <= endDayOfMonth; i++)
                             {

@@ -22,7 +22,7 @@ namespace JwtWebApiTutorial.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
         [HttpGet]
-        public async Task<ActionResult<Response<List<GetReportAttendanceResponse>>>> EditApprovalSubmission([FromQuery] ReportModelRequest request)
+        public async Task<ActionResult<Response<List<GetReportAttendanceResponse>>>> GetReportController([FromQuery] ReportModelRequest request)
         {
             try
             {
